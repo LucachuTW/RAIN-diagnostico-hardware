@@ -1,9 +1,6 @@
 import pandas as pd
 from pgmpy.models import BayesianModel
 from pgmpy.inference import VariableElimination
-from pgmpy.inference import BeliefPropagation
-from pgmpy.inference import GibbsSampling
-from pgmpy.inference import VariableElimination
 
 # Definición de la estructura de la red bayesiana
 model = BayesianModel([
@@ -27,7 +24,6 @@ model = BayesianModel([
 ])
 
 # Definición de las distribuciones de probabilidad
-# Puedes ajustar las probabilidades según datos reales o estimaciones
 cpd_cpu = pd.Series([0.1, 0.9], index=['Faulty', 'Functional'])
 cpd_ram = pd.Series([0.1, 0.9], index=['Faulty', 'Functional'])
 cpd_gpu = pd.Series([0.1, 0.9], index=['Faulty', 'Functional'])
@@ -47,9 +43,6 @@ cpd_falta_de_rendimiento = pd.DataFrame(data={
 })
 
 # Añadir las CPDs al modelo
-from pgmpy.inference import VariableElimination
-
-# Se puede utilizar este método para definir las CPDs
 from pgmpy.models import TabularCPD
 
 cpd_falta_de_rendimiento = TabularCPD(variable='Falta de rendimiento', variable_card=2,
