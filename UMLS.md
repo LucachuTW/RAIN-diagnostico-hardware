@@ -50,3 +50,6 @@ BayesianNetwork <|-- HardwareProblem
 HardwareProblem <|-- Cause
 InferenceEngine --> BayesianNetwork
 @enduml
+
+
+## UML para el diagrama de flujo
