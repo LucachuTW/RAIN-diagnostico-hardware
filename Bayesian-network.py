@@ -87,7 +87,6 @@ cpd_sobreruido = TabularCPD(
     evidence=['PSU', 'Ventiladores', 'Motherboard'], evidence_card=[2, 2, 2]
 )
 
-# Corrección del CPD de altas temperaturas
 cpd_altas_temperaturas = TabularCPD(
     variable='Altas temperaturas', variable_card=2,
     values=[[0.7, 0.6, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.7, 0.6, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
@@ -116,7 +115,6 @@ cpd_pitido = TabularCPD(
     evidence=['Motherboard', 'PSU'], evidence_card=[2, 2]
 )
 
-# Corrección del CPD de conexión lenta
 cpd_conexion_lenta = TabularCPD(
     variable='Conexión lenta', variable_card=2,
     values=[[0.5, 0.6, 0.5, 0.4, 0.6, 0.4, 0.5, 0.6],
@@ -183,7 +181,12 @@ assert model.check_model()
 # Realizar inferencia
 infer = VariableElimination(model)
 
-# Consultar probabilidad de 'Pantalla negra' dado que 'GPU' y 'Monitor' están en estado 1
-result = infer.query(variables=['Pantalla negra'], evidence={'GPU': 1, 'Monitor': 1})
+# Consultar probabilidad de 'GPU' y 'Monitor' dado que 'Pixeles muertos' está en estado 1
+result_gpu = infer.query(variables=['GPU'], evidence={'Pixeles muertos': 1})
+result_monitor = infer.query(variables=['Monitor'], evidence={'Pixeles muertos': 1})
 
-print(result)
+print("Probabilidad de que la GPU tenga problemas dado que hay píxeles muertos:")
+print(result_gpu)
+
+print("\nProbabilidad de que el Monitor tenga problemas dado que hay píxeles muertos:")
+print(result_monitor)
