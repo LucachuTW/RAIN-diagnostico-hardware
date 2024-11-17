@@ -181,12 +181,28 @@ assert model.check_model()
 # Realizar inferencia
 infer = VariableElimination(model)
 
-# Consultar probabilidad de 'GPU' y 'Monitor' dado que 'Pixeles muertos' está en estado 1
-result_gpu = infer.query(variables=['GPU'], evidence={'Pixeles muertos': 1})
-result_monitor = infer.query(variables=['Monitor'], evidence={'Pixeles muertos': 1})
+def encontrar_causa_mas_probable(evidencias):
+    # Obtener los componentes asociados a todos los problemas en las evidencias
+    componentes_asociados = set(model.get_parents(next(iter(evidencias))))
+    for problema in evidencias:
+        componentes_asociados.intersection_update(model.get_parents(problema))
+    
+    max_prob = 0
+    causa_mas_probable = None
+    
+    for componente in componentes_asociados:
+        result = infer.query(variables=[componente], evidence=evidencias)
+        prob = result.values[1]  # Probabilidad de que el componente esté en estado 1 (fallando)
+        print(f"Probabilidad de que {componente} tenga problemas dado las evidencias: {prob:.4f}")
+        
+        if prob > max_prob:
+            max_prob = prob
+            causa_mas_probable = componente
+    
+    return causa_mas_probable, max_prob
 
-print("Probabilidad de que la GPU tenga problemas dado que hay píxeles muertos:")
-print(result_gpu)
+# Ejemplo de uso con múltiples problemas
+evidencias = {'Pixeles muertos': 1, 'Pantalla negra': 1}
+causa, probabilidad = encontrar_causa_mas_probable(evidencias)
 
-print("\nProbabilidad de que el Monitor tenga problemas dado que hay píxeles muertos:")
-print(result_monitor)
+print(f"\nLa causa más probable de los problemas es: {causa} con una probabilidad de {probabilidad:.2f}")
