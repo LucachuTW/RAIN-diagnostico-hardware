@@ -20,6 +20,7 @@ model = BayesianNetwork([
     ('Periferico', 'Mala detección perifericos'), ('SO', 'Mala detección perifericos'), ('Motherboard', 'Mala detección perifericos')
 ])
 
+list_evidences = ["Pantalla negra", "No enciende", "No detección", "Falta de rendimiento", "Pixeles muertos", "Sobreruido", "Altas temperaturas", "Pantallazo azul", "Inicio lento", "Pitido", "Conexión lenta", "Mal funcionamiento USB", "Cuelgues aleatorios", "Fallos de guardado", "Mala detección perifericos"]
 
 # Definir CPDs para los componentes (probabilidad base)
 cpd_gpu = TabularCPD(variable='GPU', variable_card=2, values=[[0.5], [0.5]])

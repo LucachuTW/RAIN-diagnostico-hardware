@@ -1,12 +1,14 @@
 from pgmpy.models import BayesianNetwork
 from pgmpy.factors.discrete import TabularCPD
 from pgmpy.inference import VariableElimination
+import matplotlib.pyplot as plt
+import networkx as nx
+
 
 # Definir el modelo de red bayesiana y sus relaciones
 model = BayesianNetwork([
     ('GPU', 'Pantalla negra'), ('Monitor', 'Pantalla negra'), ('SO', 'Pantalla negra'), ('PSU', 'Pantalla negra'),
     ('PSU', 'No enciende'), ('Motherboard', 'No enciende'), ('CPU', 'No enciende'),
-    ('Motherboard', 'No señal'), ('GPU', 'No señal'), ('CPU', 'No señal'),
     ('Motherboard', 'No detección'), ('GPU', 'No detección'), ('RAM', 'No detección'), ('Almacenamiento', 'No detección'),
     ('CPU', 'Falta de rendimiento'), ('RAM', 'Falta de rendimiento'), ('GPU', 'Falta de rendimiento'), ('SO', 'Falta de rendimiento'),
     ('GPU', 'Pixeles muertos'), ('Monitor', 'Pixeles muertos'),
@@ -17,11 +19,9 @@ model = BayesianNetwork([
     ('Motherboard', 'Pitido'), ('PSU', 'Pitido'),
     ('SO', 'Conexión lenta'), ('Almacenamiento', 'Conexión lenta'), ('CPU', 'Conexión lenta'),
     ('Motherboard', 'Mal funcionamiento USB'), ('SO', 'Mal funcionamiento USB'),
-    ('Monitor', 'Desplazamiento pantalla'), ('GPU', 'Desplazamiento pantalla'),
     ('SO', 'Cuelgues aleatorios'), ('RAM', 'Cuelgues aleatorios'), ('CPU', 'Cuelgues aleatorios'), ('Motherboard', 'Cuelgues aleatorios'),
     ('Almacenamiento', 'Fallos de guardado'), ('SO', 'Fallos de guardado'), ('RAM', 'Fallos de guardado'),
-    ('Mouse', 'Mala detección ratón'), ('SO', 'Mala detección ratón'), ('Motherboard', 'Mala detección ratón'),
-    ('Keyboard', 'Mala detección teclas'), ('SO', 'Mala detección teclas'), ('Motherboard', 'Mala detección teclas')
+    ('Periferico', 'Mala detección perifericos'), ('SO', 'Mala detección perifericos'), ('Motherboard', 'Mala detección perifericos')
 ])
 
 # Definir CPDs para los componentes (probabilidad base)
@@ -34,8 +34,7 @@ cpd_ram = TabularCPD(variable='RAM', variable_card=2, values=[[0.5], [0.5]])
 cpd_so = TabularCPD(variable='SO', variable_card=2, values=[[0.5], [0.5]])
 cpd_almacenamiento = TabularCPD(variable='Almacenamiento', variable_card=2, values=[[0.5], [0.5]])
 cpd_ventiladores = TabularCPD(variable='Ventiladores', variable_card=2, values=[[0.5], [0.5]])
-cpd_mouse = TabularCPD(variable='Mouse', variable_card=2, values=[[0.5], [0.5]])
-cpd_keyboard = TabularCPD(variable='Keyboard', variable_card=2, values=[[0.5], [0.5]])
+cpd_periferico = TabularCPD(variable='Periferico', variable_card=2, values=[[0.5], [0.5]])
 
 # Definir CPDs para cada problema usando los datos proporcionados
 cpd_pantalla_negra = TabularCPD(
@@ -52,12 +51,6 @@ cpd_no_enciende = TabularCPD(
     evidence=['PSU', 'Motherboard', 'CPU'], evidence_card=[2, 2, 2]
 )
 
-cpd_no_senal = TabularCPD(
-    variable='No señal', variable_card=2,
-    values=[[0.5, 0.7, 0.7, 0.5, 0.7, 0.5, 0.5, 0.3],
-            [0.5, 0.3, 0.3, 0.5, 0.3, 0.5, 0.5, 0.7]],
-    evidence=['Motherboard', 'GPU', 'CPU'], evidence_card=[2, 2, 2]
-)
 
 cpd_no_deteccion = TabularCPD(
     variable='No detección', variable_card=2,
@@ -87,7 +80,6 @@ cpd_sobreruido = TabularCPD(
     evidence=['PSU', 'Ventiladores', 'Motherboard'], evidence_card=[2, 2, 2]
 )
 
-# Corrección del CPD de altas temperaturas
 cpd_altas_temperaturas = TabularCPD(
     variable='Altas temperaturas', variable_card=2,
     values=[[0.7, 0.6, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.7, 0.6, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
@@ -116,7 +108,6 @@ cpd_pitido = TabularCPD(
     evidence=['Motherboard', 'PSU'], evidence_card=[2, 2]
 )
 
-# Corrección del CPD de conexión lenta
 cpd_conexion_lenta = TabularCPD(
     variable='Conexión lenta', variable_card=2,
     values=[[0.5, 0.6, 0.5, 0.4, 0.6, 0.4, 0.5, 0.6],
@@ -131,12 +122,7 @@ cpd_mal_funcionamiento_usb = TabularCPD(
     evidence=['Motherboard', 'SO'], evidence_card=[2, 2]
 )
 
-cpd_desplazamiento_pantalla = TabularCPD(
-    variable='Desplazamiento pantalla', variable_card=2,
-    values=[[0.5, 0.4, 0.5, 0.6],
-            [0.5, 0.6, 0.5, 0.4]],
-    evidence=['Monitor', 'GPU'], evidence_card=[2, 2]
-)
+
 
 cpd_cuelgues_aleatorios = TabularCPD(
     variable='Cuelgues aleatorios', variable_card=2,
@@ -152,38 +138,67 @@ cpd_fallos_guardado = TabularCPD(
     evidence=['Almacenamiento', 'SO', 'RAM'], evidence_card=[2, 2, 2]
 )
 
-cpd_mala_deteccion_raton = TabularCPD(
-    variable='Mala detección ratón', variable_card=2,
-    values=[[0.5, 0.4, 0.6, 0.5, 0.5, 0.4, 0.6, 0.5],
-            [0.5, 0.6, 0.4, 0.5, 0.5, 0.6, 0.4, 0.5]],
-    evidence=['Mouse', 'SO', 'Motherboard'], evidence_card=[2, 2, 2]
+cpd_mala_deteccion_periferico = TabularCPD(
+    variable='Mala detección perifericos', variable_card=2,
+    values=[[0.8, 0.4, 0.6, 0.7, 0.5, 0.4, 0.2, 0.5],
+            [0.2, 0.6, 0.4, 0.3, 0.5, 0.6, 0.8, 0.5]],
+    evidence=['Periferico', 'SO', 'Motherboard'], evidence_card=[2, 2, 2]
 )
 
-cpd_mala_deteccion_teclas = TabularCPD(
-    variable='Mala detección teclas', variable_card=2,
-    values=[[0.5, 0.6, 0.4, 0.5, 0.5, 0.6, 0.4, 0.5],
-            [0.5, 0.4, 0.6, 0.5, 0.5, 0.4, 0.6, 0.5]],
-    evidence=['Keyboard', 'SO', 'Motherboard'], evidence_card=[2, 2, 2]
-)
 
 # Agregar todos los CPDs al modelo
 model.add_cpds(
     cpd_gpu, cpd_cpu, cpd_monitor, cpd_psu, cpd_motherboard, cpd_ram,
-    cpd_so, cpd_almacenamiento, cpd_ventiladores, cpd_mouse, cpd_keyboard,
-    cpd_pantalla_negra, cpd_no_enciende, cpd_no_senal, cpd_no_deteccion,
+    cpd_so, cpd_almacenamiento, cpd_ventiladores, cpd_periferico,
+    cpd_pantalla_negra, cpd_no_enciende, cpd_no_deteccion,
     cpd_falta_rendimiento, cpd_pixeles_muertos, cpd_sobreruido, cpd_altas_temperaturas,
     cpd_pantallazo_azul, cpd_inicio_lento, cpd_pitido, cpd_conexion_lenta,
-    cpd_mal_funcionamiento_usb, cpd_desplazamiento_pantalla, cpd_cuelgues_aleatorios,
-    cpd_fallos_guardado, cpd_mala_deteccion_raton, cpd_mala_deteccion_teclas
+    cpd_mal_funcionamiento_usb, cpd_cuelgues_aleatorios,
+    cpd_fallos_guardado, cpd_mala_deteccion_periferico
 )
 
 # Verificar que el modelo es consistente
 assert model.check_model()
 
+nx_graph = nx.DiGraph()  # Grafo dirigido
+nx_graph.add_edges_from(model.edges)  # Agregar las relaciones (edges)
+
+# Configuración de la visualización
+plt.figure(figsize=(15, 15))
+pos = nx.spring_layout(nx_graph)  # Disposición del gráfico
+nx.draw(
+    nx_graph, pos,
+    with_labels=True, node_size=3000, node_color="lightblue",
+    font_size=10, font_weight="bold", arrowsize=20
+)
+plt.title("Red Bayesiana: Problemas de hardware/software", fontsize=16)
+plt.show()
+
 # Realizar inferencia
 infer = VariableElimination(model)
 
-# Consultar probabilidad de 'Pantalla negra' dado que 'GPU' y 'Monitor' están en estado 1
-result = infer.query(variables=['Pantalla negra'], evidence={'GPU': 1, 'Monitor': 1})
+def encontrar_causa_mas_probable(evidencias):
+    # Obtener los componentes asociados a todos los problemas en las evidencias
+    componentes_asociados = set(model.get_parents(next(iter(evidencias))))
+    for problema in evidencias:
+        componentes_asociados.intersection_update(model.get_parents(problema))
+    
+    max_prob = 0
+    causa_mas_probable = None
+    
+    for componente in componentes_asociados:
+        result = infer.query(variables=[componente], evidence=evidencias)
+        prob = result.values[1]  # Probabilidad de que el componente esté en estado 1 (fallando)
+        print(f"Probabilidad de que {componente} tenga problemas dado las evidencias: {prob:.2f}")
+        
+        if prob > max_prob:
+            max_prob = prob
+            causa_mas_probable = componente
+    
+    return causa_mas_probable, max_prob
 
-print(result)
+# Ejemplo de uso con múltiples problemas
+evidencias = {'Mala detección perifericos': 1}
+causa, probabilidad = encontrar_causa_mas_probable(evidencias)
+
+print(f"\nLa causa más probable de los problemas es: {causa} con una probabilidad de {probabilidad:.2f}")
