@@ -1,45 +1,40 @@
-import PySimpleGUI as sg
+from problemcauses import list_evidences
 
-def user_interface_with_gui(list_evidences):
-    layout = [
-        [sg.Text("Introduzca los problemas de su ordenador:")],
-        [sg.Combo(list_evidences, key="problem", size=(30, 1), tooltip="Seleccione un problema de la lista")],
-        [sg.Button("Añadir problema"), sg.Button("Salir")],
-        [sg.Text("Problemas añadidos:", size=(30, 1))],
-        [sg.Listbox(values=[], size=(30, 5), key="problems_list")],
-    ]
+def user_interface():
+    def suggest_problem(user_input, evidences):
+        """Sugiere un problema similar en caso de error."""
+        return [evidence for evidence in evidences if user_input.lower() in evidence.lower()]
 
-    window = sg.Window("Interfaz de problemas", layout)
     problems = []
 
+    print("\n--- Diagnóstico de Problemas del Ordenador ---")
+    print("Ingrese los problemas uno por uno. Escriba 'exit' para finalizar.\n")
+    print("Problemas disponibles:")
+    print(", ".join([f"'{problem}'" for problem in list_evidences]))
+    print("\n")
+
     while True:
-        event, values = window.read()
+        input_user = input("-> ").strip()  # Limpia espacios en blanco
 
-        if event == sg.WINDOW_CLOSED or event == "Salir":
+        if input_user.lower() == "exit":
+            # Sale del bucle al escribir "exit"
             break
-        elif event == "Añadir problema":
-            input_user = values["problem"]
-            if input_user in list_evidences:
-                if input_user not in problems:
-                    problems.append(input_user)
-                    window["problems_list"].update(problems)
-                    sg.popup("Problema añadido correctamente.")
-                else:
-                    sg.popup("Este problema ya está en la lista.")
+        elif input_user in list_evidences:
+            print("✅ Problema añadido.\n")
+            problems.append(input_user)
+        else:
+            similar = suggest_problem(input_user, list_evidences)
+            if similar:
+                print(f"❓ Problema no reconocido. Quizás quiso decir: {', '.join(similar)}\n")
             else:
-                sg.popup("Problema no reconocido, inténtelo de nuevo.")
-
-    window.close()
+                print("❌ Problema no reconocido. Inténtelo de nuevo.\n")
 
     if problems:
-        sg.popup("RESUELTO")
+        print("\n✔️ Diagnóstico completado.")
+        print("Problemas detectados:")
+        for i, problem in enumerate(problems, 1):
+            print(f"{i}. {problem}")
         return {problem: 1 for problem in problems}
     else:
-        sg.popup("No se han introducido problemas")
-        return "No se han introducido problemas"
-
-# Ejemplo de uso
-
-list_evidences = ["Pantalla azul", "No arranca", "Se reinicia solo", "No funciona internet"]
-result = user_interface_with_gui(list_evidences)
-print(result)
+        print("\n❌ No se han introducido problemas. Finalizando.")
+        return {}

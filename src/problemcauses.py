@@ -20,7 +20,9 @@ model = BayesianNetwork([
     ('Periferico', 'Mala detección perifericos'), ('SO', 'Mala detección perifericos'), ('Motherboard', 'Mala detección perifericos')
 ])
 
-list_evidences = ["Pantalla negra", "No enciende", "No detección", "Falta de rendimiento", "Pixeles muertos", "Sobreruido", "Altas temperaturas", "Pantallazo azul", "Inicio lento", "Pitido", "Conexión lenta", "Mal funcionamiento USB", "Cuelgues aleatorios", "Fallos de guardado", "Mala detección perifericos"]
+list_evidences = ["Pantalla negra", "No enciende", "No detección", "Falta de rendimiento", "Pixeles muertos", 
+                  "Sobreruido", "Altas temperaturas", "Pantallazo azul", "Inicio lento", "Pitido", "Conexión lenta", 
+                  "Mal funcionamiento USB", "Cuelgues aleatorios", "Fallos de guardado", "Mala detección perifericos"]
 
 # Definir CPDs para los componentes (probabilidad base)
 cpd_gpu = TabularCPD(variable='GPU', variable_card=2, values=[[0.5], [0.5]])
@@ -44,8 +46,8 @@ cpd_pantalla_negra = TabularCPD(
 
 cpd_no_enciende = TabularCPD(
     variable='No enciende', variable_card=2,
-    values=[[0.5, 0.5, 0.7, 0.5, 0.5, 0.7, 0.5, 0.7],
-            [0.5, 0.5, 0.3, 0.5, 0.5, 0.3, 0.5, 0.3]],
+    values=[[0.8, 0.5, 0.7, 0.5, 0.5, 0.7, 0.5, 0.7],
+            [0.2, 0.5, 0.3, 0.5, 0.5, 0.3, 0.5, 0.3]],
     evidence=['PSU', 'Motherboard', 'CPU'], evidence_card=[2, 2, 2]
 )
 
@@ -59,8 +61,8 @@ cpd_no_deteccion = TabularCPD(
 
 cpd_falta_rendimiento = TabularCPD(
     variable='Falta de rendimiento', variable_card=2,
-    values=[[0.6, 0.6, 0.8, 0.6, 0.8, 0.5, 0.6, 0.8, 0.6, 0.6, 0.8, 0.6, 0.8, 0.5, 0.6, 0.8],
-            [0.4, 0.4, 0.2, 0.4, 0.2, 0.5, 0.4, 0.2, 0.4, 0.4, 0.2, 0.4, 0.2, 0.5, 0.4, 0.2]],
+    values=[[0.8, 0.4, 0.8, 0.6, 0.8, 0.5, 0.6, 0.8, 0.6, 0.6, 0.8, 0.6, 0.8, 0.5, 0.6, 0.8],
+            [0.2, 0.6, 0.2, 0.4, 0.2, 0.5, 0.4, 0.2, 0.4, 0.4, 0.2, 0.4, 0.2, 0.5, 0.4, 0.2]],
     evidence=['CPU', 'RAM', 'GPU', 'SO'], evidence_card=[2, 2, 2, 2]
 )
 
@@ -73,15 +75,15 @@ cpd_pixeles_muertos = TabularCPD(
 
 cpd_sobreruido = TabularCPD(
     variable='Sobreruido', variable_card=2,
-    values=[[0.5, 0.4, 0.4, 0.3, 0.3, 0.4, 0.5, 0.5],
-            [0.5, 0.6, 0.6, 0.7, 0.7, 0.6, 0.5, 0.5]],
+    values=[[0.5, 0.4, 0.4, 0.3, 0.3, 0.4, 0.2, 0.6],
+            [0.5, 0.6, 0.6, 0.7, 0.7, 0.6, 0.8, 0.4]],
     evidence=['PSU', 'Ventiladores', 'Motherboard'], evidence_card=[2, 2, 2]
 )
 
 cpd_altas_temperaturas = TabularCPD(
     variable='Altas temperaturas', variable_card=2,
-    values=[[0.7, 0.6, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.7, 0.6, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
-            [0.3, 0.4, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.3, 0.4, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]],
+    values=[[0.7, 0.6, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.7, 0.6, 0.2, 0.6, 0.5, 0.4, 0.5, 0.5],
+            [0.3, 0.4, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.3, 0.4, 0.8, 0.4, 0.5, 0.6, 0.5, 0.5]],
     evidence=['CPU', 'GPU', 'PSU', 'Ventiladores'], evidence_card=[2, 2, 2, 2]
 )
 
@@ -94,8 +96,8 @@ cpd_pantallazo_azul = TabularCPD(
 
 cpd_inicio_lento = TabularCPD(
     variable='Inicio lento', variable_card=2,
-    values=[[0.5, 0.5, 0.6, 0.5, 0.5, 0.5, 0.5, 0.5],
-            [0.5, 0.5, 0.4, 0.5, 0.5, 0.5, 0.5, 0.5]],
+    values=[[0.7, 0.6, 0.6, 0.5, 0.5, 0.8, 0.6, 0.7],
+            [0.3, 0.4, 0.4, 0.5, 0.5, 0.2, 0.4, 0.3]],
     evidence=['SO', 'Almacenamiento', 'RAM'], evidence_card=[2, 2, 2]
 )
 
@@ -120,19 +122,17 @@ cpd_mal_funcionamiento_usb = TabularCPD(
     evidence=['Motherboard', 'SO'], evidence_card=[2, 2]
 )
 
-
-
 cpd_cuelgues_aleatorios = TabularCPD(
     variable='Cuelgues aleatorios', variable_card=2,
-    values=[[0.5, 0.6, 0.5, 0.4, 0.5, 0.6, 0.5, 0.4, 0.5, 0.6, 0.5, 0.4, 0.5, 0.6, 0.5, 0.4],
-            [0.5, 0.4, 0.5, 0.6, 0.5, 0.4, 0.5, 0.6, 0.5, 0.4, 0.5, 0.6, 0.5, 0.4, 0.5, 0.6]],
+    values=[[0.8, 0.6, 0.2, 0.4, 0.5, 0.7, 0.5, 0.4, 0.5, 0.6, 0.5, 0.4, 0.2, 0.7, 0.5, 0.4],
+            [0.2, 0.4, 0.8, 0.6, 0.5, 0.3, 0.5, 0.6, 0.5, 0.4, 0.5, 0.6, 0.8, 0.3, 0.5, 0.6]],
     evidence=['SO', 'RAM', 'CPU', 'Motherboard'], evidence_card=[2, 2, 2, 2]
 )
 
 cpd_fallos_guardado = TabularCPD(
     variable='Fallos de guardado', variable_card=2,
-    values=[[0.5, 0.6, 0.5, 0.4, 0.5, 0.5, 0.5, 0.6],
-            [0.5, 0.4, 0.5, 0.6, 0.5, 0.5, 0.5, 0.4]],
+    values=[[0.8, 0.6, 0.6, 0.4, 0.5, 0.8, 0.5, 0.6],
+            [0.2, 0.4, 0.4, 0.6, 0.5, 0.2, 0.5, 0.4]],
     evidence=['Almacenamiento', 'SO', 'RAM'], evidence_card=[2, 2, 2]
 )
 
