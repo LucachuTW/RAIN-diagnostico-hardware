@@ -39,32 +39,36 @@ cpd_periferico = TabularCPD(variable='Periferico', variable_card=2, values=[[0.5
 # Definir CPDs para cada problema usando los datos proporcionados
 cpd_pantalla_negra = TabularCPD(
     variable='Pantalla negra', variable_card=2,
-    values=[[0.6, 0.6, 0.9, 0.6, 0.9, 0.6, 0.6, 0.9, 0.6, 0.6, 0.9, 0.6, 0.9, 0.6, 0.6, 0.9],
-            [0.4, 0.4, 0.1, 0.4, 0.1, 0.4, 0.4, 0.1, 0.4, 0.4, 0.1, 0.4, 0.1, 0.4, 0.4, 0.1]],
+    values=[[0.9, 0.7, 0.95, 0.8, 0.85, 0.7, 0.8, 0.95, 0.75, 0.7, 0.9, 0.7, 0.9, 0.8, 0.8, 0.95],
+            [0.1, 0.3, 0.05, 0.2, 0.15, 0.3, 0.2, 0.05, 0.25, 0.3, 0.1, 0.3, 0.1, 0.2, 0.2, 0.05]],
     evidence=['GPU', 'Monitor', 'SO', 'PSU'], evidence_card=[2, 2, 2, 2]
 )
 
+
 cpd_no_enciende = TabularCPD(
     variable='No enciende', variable_card=2,
-    values=[[0.8, 0.5, 0.7, 0.5, 0.5, 0.7, 0.5, 0.7],
-            [0.2, 0.5, 0.3, 0.5, 0.5, 0.3, 0.5, 0.3]],
+    values=[[0.9, 0.8, 0.85, 0.7, 0.8, 0.85, 0.7, 0.6],
+            [0.1, 0.2, 0.15, 0.3, 0.2, 0.15, 0.3, 0.4]],
     evidence=['PSU', 'Motherboard', 'CPU'], evidence_card=[2, 2, 2]
 )
 
 
+
 cpd_no_deteccion = TabularCPD(
     variable='No detección', variable_card=2,
-    values=[[0.6, 0.6, 0.8, 0.7, 0.7, 0.5, 0.5, 0.9, 0.6, 0.6, 0.8, 0.7, 0.7, 0.5, 0.5, 0.9],
-            [0.4, 0.4, 0.2, 0.3, 0.3, 0.5, 0.5, 0.1, 0.4, 0.4, 0.2, 0.3, 0.3, 0.5, 0.5, 0.1]],
+    values=[[0.85, 0.75, 0.9, 0.8, 0.7, 0.6, 0.6, 0.95, 0.8, 0.7, 0.85, 0.8, 0.9, 0.65, 0.7, 0.95],
+            [0.15, 0.25, 0.1, 0.2, 0.3, 0.4, 0.4, 0.05, 0.2, 0.3, 0.15, 0.2, 0.1, 0.35, 0.3, 0.05]],
     evidence=['Motherboard', 'GPU', 'RAM', 'Almacenamiento'], evidence_card=[2, 2, 2, 2]
 )
 
+
 cpd_falta_rendimiento = TabularCPD(
     variable='Falta de rendimiento', variable_card=2,
-    values=[[0.8, 0.4, 0.8, 0.6, 0.8, 0.5, 0.6, 0.8, 0.6, 0.6, 0.8, 0.6, 0.8, 0.5, 0.6, 0.8],
-            [0.2, 0.6, 0.2, 0.4, 0.2, 0.5, 0.4, 0.2, 0.4, 0.4, 0.2, 0.4, 0.2, 0.5, 0.4, 0.2]],
+    values=[[0.85, 0.6, 0.9, 0.7, 0.8, 0.65, 0.75, 0.85, 0.8, 0.75, 0.9, 0.8, 0.85, 0.65, 0.7, 0.9],
+            [0.15, 0.4, 0.1, 0.3, 0.2, 0.35, 0.25, 0.15, 0.2, 0.25, 0.1, 0.2, 0.15, 0.35, 0.3, 0.1]],
     evidence=['CPU', 'RAM', 'GPU', 'SO'], evidence_card=[2, 2, 2, 2]
 )
+
 
 cpd_pixeles_muertos = TabularCPD(
     variable='Pixeles muertos', variable_card=2,
@@ -82,15 +86,16 @@ cpd_sobreruido = TabularCPD(
 
 cpd_altas_temperaturas = TabularCPD(
     variable='Altas temperaturas', variable_card=2,
-    values=[[0.7, 0.6, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.7, 0.6, 0.2, 0.6, 0.5, 0.4, 0.5, 0.5],
-            [0.3, 0.4, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.3, 0.4, 0.8, 0.4, 0.5, 0.6, 0.5, 0.5]],
+    values=[[0.9, 0.8, 0.7, 0.6, 0.75, 0.65, 0.8, 0.7, 0.85, 0.75, 0.6, 0.7, 0.8, 0.65, 0.75, 0.7],
+            [0.1, 0.2, 0.3, 0.4, 0.25, 0.35, 0.2, 0.3, 0.15, 0.25, 0.4, 0.3, 0.2, 0.35, 0.25, 0.3]],
     evidence=['CPU', 'GPU', 'PSU', 'Ventiladores'], evidence_card=[2, 2, 2, 2]
 )
 
+
 cpd_pantallazo_azul = TabularCPD(
     variable='Pantallazo azul', variable_card=2,
-    values=[[0.5, 0.6, 0.5, 0.5, 0.6, 0.5, 0.4, 0.4],
-            [0.5, 0.4, 0.5, 0.5, 0.4, 0.5, 0.6, 0.6]],
+    values=[[0.8, 0.6, 0.8, 0.5, 0.6, 0.3, 0.4, 0.4],
+            [0.2, 0.4, 0.2, 0.5, 0.4, 0.7, 0.6, 0.6]],
     evidence=['SO', 'RAM', 'CPU'], evidence_card=[2, 2, 2]
 )
 
@@ -103,8 +108,8 @@ cpd_inicio_lento = TabularCPD(
 
 cpd_pitido = TabularCPD(
     variable='Pitido', variable_card=2,
-    values=[[0.5, 0.6, 0.5, 0.4],
-            [0.5, 0.4, 0.5, 0.6]],
+    values=[[0.8, 0.6, 0.7, 0.4],
+            [0.2, 0.4, 0.3, 0.6]],
     evidence=['Motherboard', 'PSU'], evidence_card=[2, 2]
 )
 
@@ -117,24 +122,27 @@ cpd_conexion_lenta = TabularCPD(
 
 cpd_mal_funcionamiento_usb = TabularCPD(
     variable='Mal funcionamiento USB', variable_card=2,
-    values=[[0.5, 0.4, 0.6, 0.5],
-            [0.5, 0.6, 0.4, 0.5]],
+    values=[[0.85, 0.6, 0.75, 0.5],
+            [0.15, 0.4, 0.25, 0.5]],
     evidence=['Motherboard', 'SO'], evidence_card=[2, 2]
 )
 
+
 cpd_cuelgues_aleatorios = TabularCPD(
     variable='Cuelgues aleatorios', variable_card=2,
-    values=[[0.8, 0.6, 0.2, 0.4, 0.5, 0.7, 0.5, 0.4, 0.5, 0.6, 0.5, 0.4, 0.2, 0.7, 0.5, 0.4],
-            [0.2, 0.4, 0.8, 0.6, 0.5, 0.3, 0.5, 0.6, 0.5, 0.4, 0.5, 0.6, 0.8, 0.3, 0.5, 0.6]],
+    values=[[0.9, 0.7, 0.3, 0.5, 0.6, 0.8, 0.6, 0.5, 0.7, 0.8, 0.6, 0.5, 0.3, 0.85, 0.6, 0.4],
+            [0.1, 0.3, 0.7, 0.5, 0.4, 0.2, 0.4, 0.5, 0.3, 0.2, 0.4, 0.5, 0.7, 0.15, 0.4, 0.6]],
     evidence=['SO', 'RAM', 'CPU', 'Motherboard'], evidence_card=[2, 2, 2, 2]
 )
 
+
 cpd_fallos_guardado = TabularCPD(
     variable='Fallos de guardado', variable_card=2,
-    values=[[0.8, 0.6, 0.6, 0.4, 0.5, 0.8, 0.5, 0.6],
-            [0.2, 0.4, 0.4, 0.6, 0.5, 0.2, 0.5, 0.4]],
+    values=[[0.9, 0.7, 0.8, 0.6, 0.7, 0.85, 0.75, 0.8],
+            [0.1, 0.3, 0.2, 0.4, 0.3, 0.15, 0.25, 0.2]],
     evidence=['Almacenamiento', 'SO', 'RAM'], evidence_card=[2, 2, 2]
 )
+
 
 cpd_mala_deteccion_periferico = TabularCPD(
     variable='Mala detección perifericos', variable_card=2,

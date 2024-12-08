@@ -39,11 +39,18 @@ def main():
         return
 
     # Encontrar la causa más probable
-    causa, probabilidad = troubleshooter.encontrar_causa_mas_probable(evidencias)
+    causa, resultado = troubleshooter.encontrar_causa_mas_probable(evidencias)
 
     # Mostrar los resultados
     print("\n--- Diagnóstico Final ---")
-    print(f"La causa más probable de los problemas es: {causa} con una probabilidad de {probabilidad:.2f}")
+    if causa is None:
+        print("No se encontró una causa común.")
+        print("Causas más probables por evidencia:")
+        for causa_individual, probabilidad in resultado:
+            print(f"- {causa_individual}: {probabilidad:.2f}")
+    else:
+        probabilidad = resultado  # En este caso, `resultado` es la probabilidad asociada a `causa`
+        print(f"La causa más probable de los problemas es: {causa} con una probabilidad de {probabilidad:.2f}")
     print("--- Fin del Diagnóstico ---")
 
 if __name__ == "__main__":
