@@ -18,7 +18,7 @@ def user_interface():
             if normalized_input in normalized_key
         ]
 
-    problems = []
+    problems = set()  # Usar un conjunto para evitar duplicados
 
     print("\n--- Diagnóstico de Problemas del Ordenador ---")
     print("Ingrese los problemas uno por uno. Escriba 'exit' para finalizar.\n")
@@ -34,8 +34,12 @@ def user_interface():
             # Sale del bucle al escribir "exit"
             break
         elif normalized_input in normalized_evidences:
-            print("✅ Problema añadido.\n")
-            problems.append(normalized_evidences[normalized_input])
+            original_problem = normalized_evidences[normalized_input]
+            if original_problem in problems:
+                print("⚠️ Este problema ya ha sido añadido. Intente otro.\n")
+            else:
+                print("✅ Problema añadido.\n")
+                problems.add(original_problem)
         else:
             similar = suggest_problem(input_user, normalized_evidences)
             if similar:
